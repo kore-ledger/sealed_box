@@ -31,7 +31,6 @@ pub fn seal_box(
     let rk = PublicKey::from_slice(public_key)?;
     let nonce = &Blake2s256::new().chain(&pk.as_bytes()).chain(&rk.as_bytes()).finalize()[..24];
     let cipher = encrypt_box(message, &rk, &sk, nonce)?;
-    println!("cipher: {:?}", cipher);
     Ok([pk.as_bytes().to_vec(), cipher].concat())
 }
 
@@ -56,7 +55,7 @@ pub fn unseal_box(
         Err(SealedBoxError::BoxToSmall.into())
     } else {
         let pk_bytes: [u8; PUBLIC_KEY_SIZE] = cipher[..PUBLIC_KEY_SIZE].try_into()
-            .map_err(|_| SealedBoxError::BoxToSmall)?;
+            .expect("slice with incorrect length");
         let pk = PublicKey::from_slice(&pk_bytes)?;
         let rk = PublicKey::from(secret_key);
         let nonce = &Blake2s256::new().chain(&pk.as_bytes()).chain(&rk.as_bytes()).finalize()[..24];
@@ -72,11 +71,7 @@ fn decrypt_box(
     secret_key: &SecretKey,
     nonce: &[u8],
 ) -> Result<Vec<u8>, Error> {
-    println!("cipher: {:?}", cipher.to_vec());
     let nonce = GenericArray::from_slice(nonce);
-    let enc = ChaChaBox::new(public_key, secret_key);
-    let result = enc.decrypt(nonce, cipher);
-    println!("result: {:?}", result);
     Ok(ChaChaBox::new(public_key, secret_key).decrypt(nonce, cipher)
         .map_err(|_| SealedBoxError::Aead)?)
 }
@@ -116,6 +111,19 @@ mod tests {
         let cipher = seal_box(message, fpk.as_bytes(), Some(b"fedcba9876543210fedcba9876543210")).unwrap();
         let message2 = unseal_box(&cipher, &fsk).unwrap();
         assert_eq!(message, &message2[..]);
+
+        let cipher = seal_box(message, fpk.as_bytes(), None).unwrap();
+        let message2 = unseal_box(&cipher, &fsk).unwrap();
+        assert_eq!(message, &message2[..]);
+
+        let result = unseal_box(b"size small", &fsk);
+        if result.is_err() {
+            let err_str = format!("{:?}", result.err().unwrap());
+            assert_eq!(err_str, "Box to small");
+        }
+
+
+
     }
 
 }
