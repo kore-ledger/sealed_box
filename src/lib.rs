@@ -122,8 +122,6 @@ mod tests {
             assert_eq!(err_str, "Box to small");
         }
 
-
-
     }
 
 }

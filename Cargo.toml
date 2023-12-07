@@ -2,6 +2,7 @@
 name = "sealed_box"
 version = "0.1.1"
 edition = "2021"
+authors = ["Antonio Estévez <aestevez@kore-ledger.net>"]
 
 [dependencies]
 anyhow = "1.0"
@@ -9,6 +10,3 @@ blake2 = "0.10"
 crypto_box = { version = "0.9.1", features = ["chacha20"] }
 generic-array = "1.0"
 rand = "0.8"
-
-[dev-dependencies]
-ed25519-dalek = "2.1"
