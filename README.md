@@ -7,7 +7,7 @@
 
 `sealed_box` is a Rust a library that includes a set of functions to encrypt and decrypt data using the `sealed box` construction. The `sealed box` construction is a simple and secure way to encrypt small amounts of data using a public key. The `sealed box` construction is described in the [libsodium documentation](https://doc.libsodium.org/public-key_cryptography/sealed_boxes).
 
-It is based on the crypto crate, a pure Rust implementation of NaCl's crypto_box primitive.
+It is based on the [crypto_box](https://crates.io/crates/crypto_box) crate, a pure Rust implementation of NaCl's crypto_box primitive.
 
 ## Usage
 
