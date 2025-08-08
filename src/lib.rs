@@ -11,7 +11,8 @@
 
 use anyhow::Error;
 use blake2::{Blake2s256, Digest, digest::{Update, generic_array::GenericArray}};
-use crypto_box::{aead::Aead, ChaChaBox, SecretKey, PublicKey};
+use crypto_box::{aead::Aead, ChaChaBox};
+pub use crypto_box::{SecretKey, PublicKey};
 
 /// Public key size
 const PUBLIC_KEY_SIZE: usize = 32;
